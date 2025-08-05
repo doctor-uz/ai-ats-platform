@@ -6,27 +6,25 @@ interface FileUploaderProps {
   onFileSelect?: (file: File | null) => void;
 }
 
-const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
+const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
+  const [file, setFile] = useState<File | null>(null);
+  const maxFileSize = 20 * 1024 * 1024;
+
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0] || null;
-
-      onFileSelect?.(file);
+      const newFile = acceptedFiles[0] || null;
+      setFile(newFile);
+      onFileSelect?.(newFile);
     },
     [onFileSelect],
   );
 
-  const maxFileSize = 20 * 1024 * 1024; // 20MB in bytes
-
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
-    useDropzone({
-      onDrop,
-      multiple: false,
-      accept: { "application/pdf": [".pdf"] },
-      maxSize: maxFileSize,
-    });
-
-  const file = acceptedFiles[0] || null;
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: false,
+    accept: { "application/pdf": [".pdf"] },
+    maxSize: maxFileSize,
+  });
 
   return (
     <div className="w-full gradient-border">
@@ -39,7 +37,7 @@ const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
               className="uploader-selected-file"
               onClick={(e) => e.stopPropagation()}
             >
-              <img src="/images/pdf.png" alt="pdf" className="size-10" />
+              <img src="/public/images/pdf.png" alt="pdf" className="size-10" />
               <div className="flex items-center space-x-3">
                 <div>
                   <p className="text-sm font-medium text-gray-700 truncate max-w-xs">
@@ -53,6 +51,8 @@ const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
               <button
                 className="p-2 cursor-pointer"
                 onClick={(e) => {
+                  e.stopPropagation();
+                  setFile(null);
                   onFileSelect?.(null);
                 }}
               >
@@ -78,4 +78,5 @@ const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
     </div>
   );
 };
+
 export default FileUploader;
