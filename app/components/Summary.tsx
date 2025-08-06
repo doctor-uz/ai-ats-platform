@@ -2,24 +2,23 @@ import ScoreGauge from "~/components/ScoreGauge";
 import ScoreBadge from "~/components/ScoreBadge";
 
 const Category = ({ title, score }: { title: string; score: number }) => {
-  console.log(`Rendering Category: ${title} with score: ${score}`);
-
+  const percent = Math.round(score * 10); // Convert 0-10 to 0-100
   const textColor =
-    score > 70
+    percent > 70
       ? "text-green-600"
-      : score > 49
+      : percent > 49
         ? "text-yellow-600"
         : "text-red-600";
 
   return (
     <div className="resume-summary">
-      <div className="category">
-        <div className="flex flex-row gap-2 items-center justify-center">
+      <div className="category flex flex-row items-center justify-between px-6 py-4 bg-white rounded-2xl mb-4 shadow">
+        <div className="flex flex-row items-center gap-4">
           <p className="text-2xl">{title}</p>
-          <ScoreBadge score={score} />
+          <ScoreBadge score={percent} />
         </div>
         <p className="text-2xl">
-          <span className={textColor}>{score}</span>/100
+          <span className={textColor}>{percent}</span>/100
         </p>
       </div>
     </div>
@@ -30,8 +29,7 @@ const Summary = ({ feedback }: { feedback: Feedback }) => {
   return (
     <div className="bg-white rounded-2xl shadow-md w-full">
       <div className="flex flex-row items-center p-4 gap-8">
-        <ScoreGauge score={feedback.overallScore} />
-
+        <ScoreGauge score={Math.round(feedback.overall_rating * 10)} />
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-bold">Your Resume Score</h2>
           <p className="text-sm text-gray-500">
@@ -39,12 +37,11 @@ const Summary = ({ feedback }: { feedback: Feedback }) => {
           </p>
         </div>
       </div>
-
-      <Category title="Tone & Style" score={feedback.toneAndStyle?.score} />
-      <Category title="Content" score={feedback.content?.score} />
-      <Category title="Structure" score={feedback.structure?.score} />
-      <Category title="Skills" score={feedback.skills?.score} />
+      <Category title="Overall Fit" score={feedback.overall_rating} />
+      <Category title="ATS Compatibility" score={feedback.ats_compatibility} />
+      <Category title="Job Match" score={feedback.job_match_score} />
     </div>
   );
 };
+
 export default Summary;

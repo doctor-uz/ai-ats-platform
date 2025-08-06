@@ -80,8 +80,8 @@ const Resume = () => {
             <div className="flex flex-col gap-8 animate-in fade-in duration-1000">
               <Summary feedback={feedback} />
               <ATS
-                score={feedback.ATS?.score || 0}
-                suggestions={feedback.ATS?.tips || []}
+                score={feedback.ats_compatibility}
+                issues={feedback.ats_issues}
               />
               <Details feedback={feedback} />
             </div>
