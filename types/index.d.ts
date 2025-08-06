@@ -55,4 +55,5 @@ interface Feedback {
       explanation: string;
     }[];
   };
+  ats_compatibility: number;
 }
