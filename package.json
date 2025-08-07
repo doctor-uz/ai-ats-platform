@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "start": "serve -s dist",
-    "dev": "react-router dev",
-    "typecheck": "react-router typegen && tsc"
+    "dev": "vite",
+    "build": "react-router build",
+    "preview": "vite preview",
+    "start": "node build/server/index.js"
   },
   "dependencies": {
     "@react-router/node": "^7.7.1",
