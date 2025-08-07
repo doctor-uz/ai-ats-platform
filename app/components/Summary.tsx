@@ -39,7 +39,7 @@ const Summary = ({ feedback }: { feedback: Feedback }) => {
       </div>
       <Category title="Overall Fit" score={feedback.overall_rating} />
       <Category title="ATS Compatibility" score={feedback.ats_compatibility} />
-      <Category title="Job Match" score={feedback.job_match_score} />
+      <Category title="Job Match" score={feedback.keyword_optimization} />
     </div>
   );
 };

@@ -42,7 +42,7 @@ const Details = ({ feedback }: { feedback: Feedback }) => {
           </AccordionHeader>
           <AccordionContent itemId="weaknesses">
             <div className="flex flex-col gap-2">
-              {feedback.weaknesses.map((w, i) => (
+              {feedback.weaknesses?.map((w, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <img
                     src="/icons/warning.svg"
@@ -62,7 +62,7 @@ const Details = ({ feedback }: { feedback: Feedback }) => {
           </AccordionHeader>
           <AccordionContent itemId="missing">
             <div className="flex flex-col gap-2">
-              {feedback.missing_requirements.map((m, i) => (
+              {feedback.missing_requirements?.map((m, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <img
                     src="/icons/warning.svg"
@@ -82,7 +82,7 @@ const Details = ({ feedback }: { feedback: Feedback }) => {
           </AccordionHeader>
           <AccordionContent itemId="recommendations">
             <div className="flex flex-col gap-2">
-              {feedback.recommendations.map((r, i) => (
+              {feedback.recommendations?.map((r, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <img
                     src="/icons/check.svg"
@@ -99,12 +99,12 @@ const Details = ({ feedback }: { feedback: Feedback }) => {
         <AccordionItem id="suggested">
           <AccordionHeader itemId="suggested">
             <span className="text-2xl font-semibold">
-              Suggested Improvements
+              Formatting Suggestions
             </span>
           </AccordionHeader>
           <AccordionContent itemId="suggested">
             <div className="flex flex-col gap-2">
-              {feedback.suggested_improvements.map((s, i) => (
+              {feedback.formatting_suggestions?.map((s, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <img
                     src="/icons/check.svg"
@@ -120,11 +120,20 @@ const Details = ({ feedback }: { feedback: Feedback }) => {
 
         <AccordionItem id="jobmatch">
           <AccordionHeader itemId="jobmatch">
-            <span className="text-2xl font-semibold">Job Match Analysis</span>
+            <span className="text-2xl font-semibold">Keyword Suggestions</span>
           </AccordionHeader>
           <AccordionContent itemId="jobmatch">
             <div className="flex flex-col gap-2">
-              <p className="text-blue-700">{feedback.job_match_analysis}</p>
+              {feedback.keyword_suggestions?.map((s, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <img
+                    src="/icons/check.svg"
+                    alt="check"
+                    className="w-5 h-5 mt-1"
+                  />
+                  <p className="text-blue-700">{s}</p>
+                </div>
+              ))}
             </div>
           </AccordionContent>
         </AccordionItem>

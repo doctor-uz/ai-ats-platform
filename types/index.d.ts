@@ -8,12 +8,19 @@ interface Feedback {
   ats_issues: string[];
   recommendations: string[];
   job_match_score: number; // number (0-10)
+  keyword_optimization: number; // number (0-10)
+  keyword_suggestions: string[];
   job_match_analysis: string;
   suggested_improvements: string[];
+  formatting_suggestions: string[];
 }
 
 interface Resume {
   resumeUrl: string;
   imageUrl: string;
   feedback: Feedback;
+  id: string;
+  companyName?: string;
+  jobTitle?: string;
+  imagePath: string;
 }
