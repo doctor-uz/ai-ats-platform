@@ -2,7 +2,7 @@ import ScoreGauge from "~/components/ScoreGauge";
 import ScoreBadge from "~/components/ScoreBadge";
 
 const Category = ({ title, score }: { title: string; score: number }) => {
-  const percent = Math.round(score * 10); // Convert 0-10 to 0-100
+  const percent = Math.round(score * 10);
   const textColor =
     percent > 70
       ? "text-green-600"
@@ -38,8 +38,14 @@ const Summary = ({ feedback }: { feedback: Feedback }) => {
         </div>
       </div>
       <Category title="Overall Fit" score={feedback.overall_rating} />
-      <Category title="ATS Compatibility" score={feedback.ats_compatibility} />
-      <Category title="Job Match" score={feedback.keyword_optimization} />
+      <Category
+        title="Technical Skills"
+        score={feedback.technical_skills_rating}
+      />
+      <Category title="Experience" score={feedback?.experience_rating} />
+      <Category title="Formatting" score={feedback?.formatting_rating} />
+      <Category title="ATS Compatibility" score={feedback?.ats_compatibility} />
+      <Category title="Job Match" score={feedback?.job_match_score} />
     </div>
   );
 };

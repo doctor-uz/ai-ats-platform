@@ -1,11 +1,11 @@
 import React from "react";
 
 interface ATSProps {
-  score: number; // ats_compatibility (0-10)
-  issues: string[];
+  score: number;
+  feedback?: string;
 }
 
-const ATS: React.FC<ATSProps> = ({ score, issues }) => {
+const ATS: React.FC<ATSProps> = ({ score, feedback }) => {
   const percent = Math.round(score * 10);
   const gradientClass =
     percent > 69
@@ -45,18 +45,7 @@ const ATS: React.FC<ATSProps> = ({ score, issues }) => {
           This score shows how your resume is likely to perform in Applicant
           Tracking Systems.
         </p>
-        <div className="space-y-3">
-          {issues.map((issue, i) => (
-            <div key={i} className="flex items-start gap-3">
-              <img
-                src="/icons/warning.svg"
-                alt="Warning"
-                className="w-5 h-5 mt-1"
-              />
-              <p className="text-amber-700">{issue}</p>
-            </div>
-          ))}
-        </div>
+        {feedback && <p className="text-amber-700">{feedback}</p>}
       </div>
       <p className="text-gray-700 italic">
         Keep refining your resume to improve your chances of getting past ATS

@@ -1,4 +1,3 @@
-import { cn } from "~/lib/utils";
 import {
   Accordion,
   AccordionContent,
@@ -7,12 +6,6 @@ import {
 } from "./Accordion";
 
 const Details = ({ feedback }: { feedback: Feedback }) => {
-  const formatTips = (tipsArray: string[], type: "good" | "improve") =>
-    tipsArray.map((tip) => ({
-      type,
-      tip,
-    }));
-
   return (
     <div className="flex flex-col gap-4 w-full">
       <Accordion>
@@ -22,7 +15,7 @@ const Details = ({ feedback }: { feedback: Feedback }) => {
           </AccordionHeader>
           <AccordionContent itemId="strengths">
             <div className="flex flex-col gap-2">
-              {feedback.strengths.map((s, i) => (
+              {feedback?.strengths?.map?.((s, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <img
                     src="/icons/check.svg"
@@ -42,7 +35,7 @@ const Details = ({ feedback }: { feedback: Feedback }) => {
           </AccordionHeader>
           <AccordionContent itemId="weaknesses">
             <div className="flex flex-col gap-2">
-              {feedback.weaknesses?.map((w, i) => (
+              {feedback?.weaknesses?.map((w, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <img
                     src="/icons/warning.svg"
@@ -56,85 +49,65 @@ const Details = ({ feedback }: { feedback: Feedback }) => {
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem id="missing">
-          <AccordionHeader itemId="missing">
-            <span className="text-2xl font-semibold">Missing Requirements</span>
-          </AccordionHeader>
-          <AccordionContent itemId="missing">
-            <div className="flex flex-col gap-2">
-              {feedback.missing_requirements?.map((m, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <img
-                    src="/icons/warning.svg"
-                    alt="warn"
-                    className="w-5 h-5 mt-1"
-                  />
-                  <p className="text-amber-700">{m}</p>
-                </div>
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem id="recommendations">
-          <AccordionHeader itemId="recommendations">
-            <span className="text-2xl font-semibold">Recommendations</span>
-          </AccordionHeader>
-          <AccordionContent itemId="recommendations">
-            <div className="flex flex-col gap-2">
-              {feedback.recommendations?.map((r, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <img
-                    src="/icons/check.svg"
-                    alt="check"
-                    className="w-5 h-5 mt-1"
-                  />
-                  <p className="text-green-700">{r}</p>
-                </div>
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem id="suggested">
-          <AccordionHeader itemId="suggested">
+        <AccordionItem id="specific_improvements">
+          <AccordionHeader itemId="specific_improvements">
             <span className="text-2xl font-semibold">
-              Formatting Suggestions
+              Specific Improvements
             </span>
           </AccordionHeader>
-          <AccordionContent itemId="suggested">
+          <AccordionContent itemId="specific_improvements">
             <div className="flex flex-col gap-2">
-              {feedback.formatting_suggestions?.map((s, i) => (
+              {feedback?.specific_improvements?.map((impr, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <img
                     src="/icons/check.svg"
-                    alt="check"
+                    alt="improvement"
                     className="w-5 h-5 mt-1"
                   />
-                  <p className="text-green-700">{s}</p>
+                  <p className="text-blue-700">{impr}</p>
                 </div>
               ))}
             </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem id="techskills">
+          <AccordionHeader itemId="techskills">
+            <span className="text-2xl font-semibold">
+              Technical Skills Feedback
+            </span>
+          </AccordionHeader>
+          <AccordionContent itemId="techskills">
+            <p className="text-gray-700">
+              {feedback?.technical_skills_feedback}
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem id="experience">
+          <AccordionHeader itemId="experience">
+            <span className="text-2xl font-semibold">Experience Feedback</span>
+          </AccordionHeader>
+          <AccordionContent itemId="experience">
+            <p className="text-gray-700">{feedback?.experience_feedback}</p>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem id="formatting">
+          <AccordionHeader itemId="formatting">
+            <span className="text-2xl font-semibold">Formatting Feedback</span>
+          </AccordionHeader>
+          <AccordionContent itemId="formatting">
+            <p className="text-gray-700">{feedback?.formatting_feedback}</p>
           </AccordionContent>
         </AccordionItem>
 
         <AccordionItem id="jobmatch">
           <AccordionHeader itemId="jobmatch">
-            <span className="text-2xl font-semibold">Keyword Suggestions</span>
+            <span className="text-2xl font-semibold">Job Match Feedback</span>
           </AccordionHeader>
           <AccordionContent itemId="jobmatch">
-            <div className="flex flex-col gap-2">
-              {feedback.keyword_suggestions?.map((s, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <img
-                    src="/icons/check.svg"
-                    alt="check"
-                    className="w-5 h-5 mt-1"
-                  />
-                  <p className="text-blue-700">{s}</p>
-                </div>
-              ))}
-            </div>
+            <p className="text-gray-700">{feedback?.job_match_feedback}</p>
           </AccordionContent>
         </AccordionItem>
       </Accordion>

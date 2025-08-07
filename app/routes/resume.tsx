@@ -26,14 +26,11 @@ const Resume = () => {
   useEffect(() => {
     const loadResume = async () => {
       const resume = await kv.get(`resume:${id}`);
-
       if (!resume) return;
-
       const data = JSON.parse(resume);
 
       const resumeBlob = await fs.read(data.resumePath);
       if (!resumeBlob) return;
-
       const pdfBlob = new Blob([resumeBlob], { type: "application/pdf" });
       const resumeUrl = URL.createObjectURL(pdfBlob);
       setResumeUrl(resumeUrl);
@@ -44,9 +41,7 @@ const Resume = () => {
       setImageUrl(imageUrl);
 
       setFeedback(data.feedback);
-      console.log({ resumeUrl, imageUrl, feedback: data.feedback });
     };
-
     loadResume();
   }, [id]);
 
@@ -81,7 +76,7 @@ const Resume = () => {
               <Summary feedback={feedback} />
               <ATS
                 score={feedback.ats_compatibility}
-                issues={feedback.ats_issues}
+                feedback={feedback.ats_feedback}
               />
               <Details feedback={feedback} />
             </div>
@@ -93,4 +88,5 @@ const Resume = () => {
     </main>
   );
 };
+
 export default Resume;
