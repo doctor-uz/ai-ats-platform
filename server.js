@@ -7,6 +7,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const build = await import("./build/server/index.js");
+
+console.log("SSR build:", build.routes);
+for (const key in build.routes) {
+  console.log(
+    `Route ${key}: path = "${build.routes[key].path}", index = ${build.routes[key].index}`,
+  );
+}
 const app = express();
 
 app.use("/assets", express.static(path.join(__dirname, "build/client/assets")));

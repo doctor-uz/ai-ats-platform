@@ -3,10 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "react-router dev",
     "build": "react-router build",
-    "preview": "vite preview",
-    "start": "node server.js"
+    "start": "react-router-serve ./build/server/index.js"
   },
   "dependencies": {
     "@react-router/node": "^7.7.1",
@@ -19,6 +18,7 @@
     "react-dom": "^19.1.0",
     "react-dropzone": "^14.3.8",
     "react-router": "^7.7.1",
+    "react-router-dom": "^7.7.1",
     "serve": "^14.2.4",
     "tailwind-merge": "^3.3.1",
     "zustand": "^5.0.7"
