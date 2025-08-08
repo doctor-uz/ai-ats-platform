@@ -3,7 +3,7 @@ import Navbar from "~/components/Navbar";
 import FileUploader from "~/components/FileUploader";
 import { usePuterStore } from "~/lib/puter";
 import { useNavigate } from "react-router";
-import { convertPdfToImage } from "~/lib/pdf2img";
+//import { convertPdfToImage } from "~/lib/pdf2img";
 import { generateUUID } from "~/lib/utils";
 import { prepareInstructions } from "../../constants";
 
@@ -36,10 +36,20 @@ const Upload = () => {
     if (!uploadedFile) return setStatusText("Error: Failed to upload file");
 
     setStatusText("Converting to image...");
+    const { convertPdfToImage } = await import("~/lib/pdf2img");
     const imageFile = await convertPdfToImage(file);
 
-    if (!imageFile.file)
-      return setStatusText("Error: Failed to convert PDF to image");
+    if (!imageFile.file) {
+      return setStatusText(
+        `Error: Failed to convert PDF to image${imageFile.error ? " — " + imageFile.error : ""}`,
+      );
+    }
+    // setStatusText("Converting to image...");
+    // const imageFile = await convertPdfToImage(file);
+    // console.log("Image file:", imageFile);
+
+    // if (!imageFile.file)
+    //   return setStatusText("Error: Failed to convert PDF to image");
 
     setStatusText("Uploading the image...");
     const uploadedImage = await fs.upload([imageFile.file]);

@@ -1,85 +1,78 @@
-export interface PdfConversionResult {
-  imageUrl: string;
-  file: File | null;
-  error?: string;
-}
+// ~/lib/pdf2img.ts
+import {
+  GlobalWorkerOptions,
+  getDocument,
+  type PDFDocumentProxy,
+} from "pdfjs-dist";
+// 💡 В CRA v4 удобнее всего указать CDN-воркер (иначе импорт воркера может упасть на webpack4)
+GlobalWorkerOptions.workerSrc =
+  "https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js";
 
-let pdfjsLib: any = null;
-let isLoading = false;
-let loadPromise: Promise<any> | null = null;
-
-async function loadPdfJs(): Promise<any> {
-  if (pdfjsLib) return pdfjsLib;
-  if (loadPromise) return loadPromise;
-
-  isLoading = true;
-  // @ts-expect-error - pdfjs-dist/build/pdf.mjs is not a module
-  loadPromise = import("pdfjs-dist/build/pdf.mjs").then((lib) => {
-    // Set the worker source to use local file
-    lib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-    pdfjsLib = lib;
-    isLoading = false;
-    return lib;
-  });
-
-  return loadPromise;
-}
+type PdfToImgResult =
+  | { file: File; width: number; height: number }
+  | { file: null; error: string };
 
 export async function convertPdfToImage(
-  file: File,
-): Promise<PdfConversionResult> {
+  pdfFile: File,
+): Promise<PdfToImgResult> {
   try {
-    const lib = await loadPdfJs();
+    // не выполняем на сервере/во время SSR
+    if (typeof window === "undefined") {
+      return { file: null, error: "PDF rendering is client-only" };
+    }
 
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await lib.getDocument({ data: arrayBuffer }).promise;
+    // динамический импорт, чтобы SSR не тянул pdfjs-dist
+    const pdfjs: any = await import("pdfjs-dist");
+    pdfjs.GlobalWorkerOptions.workerSrc =
+      "https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js";
+
+    if (!pdfFile || pdfFile.type !== "application/pdf") {
+      return { file: null, error: "Not a PDF file" };
+    }
+
+    const loadingTask = pdfjs.getDocument({
+      data: await pdfFile.arrayBuffer(),
+    });
+    const pdf = await loadingTask.promise;
     const page = await pdf.getPage(1);
 
-    const viewport = page.getViewport({ scale: 4 });
+    const viewport = page.getViewport({ scale: 2 });
     const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return { file: null, error: "Canvas 2D not supported" };
 
     canvas.width = viewport.width;
     canvas.height = viewport.height;
 
-    if (context) {
-      context.imageSmoothingEnabled = true;
-      context.imageSmoothingQuality = "high";
-    }
+    await page.render({ canvasContext: ctx as any, viewport }).promise;
 
-    await page.render({ canvasContext: context!, viewport }).promise;
+    const blob: Blob | null = await new Promise((resolve) =>
+      canvas.toBlob((b) => resolve(b), "image/png"),
+    );
+    const out =
+      blob ??
+      (() => {
+        const dataUrl = canvas.toDataURL("image/png");
+        const byteString = atob(dataUrl.split(",")[1]);
+        const mime = dataUrl.substring(5, dataUrl.indexOf(";"));
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++)
+          ia[i] = byteString.charCodeAt(i);
+        return new Blob([ab], { type: mime });
+      })();
 
-    return new Promise((resolve) => {
-      canvas.toBlob(
-        (blob) => {
-          if (blob) {
-            // Create a File from the blob with the same name as the pdf
-            const originalName = file.name.replace(/\.pdf$/i, "");
-            const imageFile = new File([blob], `${originalName}.png`, {
-              type: "image/png",
-            });
+    const pngFile = new File(
+      [out],
+      `${pdfFile.name.replace(/\.pdf$/i, "")}.png`,
+      {
+        type: "image/png",
+      },
+    );
 
-            resolve({
-              imageUrl: URL.createObjectURL(blob),
-              file: imageFile,
-            });
-          } else {
-            resolve({
-              imageUrl: "",
-              file: null,
-              error: "Failed to create image blob",
-            });
-          }
-        },
-        "image/png",
-        1.0,
-      ); // Set quality to maximum (1.0)
-    });
-  } catch (err) {
-    return {
-      imageUrl: "",
-      file: null,
-      error: `Failed to convert PDF: ${err}`,
-    };
+    return { file: pngFile, width: canvas.width, height: canvas.height };
+  } catch (e: any) {
+    console.error("convertPdfToImage error:", e);
+    return { file: null, error: e?.message || "Unknown error" };
   }
 }
